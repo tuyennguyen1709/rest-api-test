@@ -3,6 +3,7 @@ package gss.workshop.testing.tests;
 import gss.workshop.testing.pojo.board.BoardCreationRes;
 import gss.workshop.testing.requests.RequestFactory;
 import gss.workshop.testing.utils.ConvertUtils;
+import gss.workshop.testing.utils.OtherUtils;
 import gss.workshop.testing.utils.ValidationUtils;
 import io.restassured.response.Response;
 import org.testng.annotations.Test;
@@ -12,7 +13,8 @@ public class TrelloTests extends TestBase {
   @Test
   public void trelloWorkflowTest() {
     // 1. Create new board without default list
-    Response resBoardCreation = RequestFactory.createBoard("Goals_Q1_2022", false);
+    String boardName = OtherUtils.randomName();
+    Response resBoardCreation = RequestFactory.createBoard(boardName, false);
 
     // VP. Validate status code
     ValidationUtils.validateStatusCode(resBoardCreation, 200);
@@ -20,7 +22,7 @@ public class TrelloTests extends TestBase {
     // VP. Validate a board is created: Board name and permission level
     BoardCreationRes board =
         ConvertUtils.convertRestResponseToPojo(resBoardCreation, BoardCreationRes.class);
-    ValidationUtils.validateStringEqual("Goals_Q1_2022", board.getName());
+    ValidationUtils.validateStringEqual(boardName, board.getName());
     ValidationUtils.validateStringEqual("private", board.getPrefs().getPermissionLevel());
 
     // -> Store board Id

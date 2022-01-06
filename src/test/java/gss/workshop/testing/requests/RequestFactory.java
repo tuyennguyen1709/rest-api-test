@@ -29,7 +29,7 @@ public class RequestFactory extends TestBase {
         RestClient.doPostRequestWithParamsAndNoPayload(
             requestPath,
             params); // it calls a method of RestClient "doPostRequestWithParamsAndNoPayload"  to
-                     // perform the Post request with specific info was prepared.
+    // perform the Post request with specific info was prepared.
     logger.info("Finish board creation.");
     return res;
   }
