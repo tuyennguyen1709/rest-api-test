@@ -23,6 +23,7 @@ public class RequestFactory extends TestBase {
    */
   public static Response createBoard(String boardName) {
     logger.info("Creating a new board.");
+    HashMap<String, String> params = setCommonQueryParams();
     params.putAll(addParams(Map.of("name", boardName)));
     String requestPath = String.format(prop.getProperty("boardCreationPath"), version);
     Response res =
@@ -43,10 +44,11 @@ public class RequestFactory extends TestBase {
    */
   public static Response createBoard(String boardName, boolean defaultList) {
     logger.info("Creating a new board.");
+    HashMap<String, String> params = setCommonQueryParams();
     params.putAll(addParams(Map.of("name", boardName, "defaultLists", false)));
     String requestPath = String.format(prop.getProperty("boardCreationPath"), version);
     Response res = RestClient.doPostRequestWithParamsAndNoPayload(requestPath, params);
-    logger.info("Finish board creation.");
+    logger.info(String.format("Create %s is successfully", boardName));
     return res;
   }
 
@@ -57,7 +59,12 @@ public class RequestFactory extends TestBase {
    * @return Response of the request
    */
   public static Response getBoardById(String boardId) {
-    return null;
+    logger.info(String.format("Get the board by id %s", boardId));
+    HashMap<String, String> params = setCommonQueryParams();
+    String requestPath = String.format(prop.getProperty("getBoardPath"), version, boardId);
+    Response res = RestClient.doGetRequestWithParams(requestPath, params);
+    logger.info(String.format("Get the board by id %s is successfully", boardId));
+    return res;
   }
 
   /**
@@ -67,7 +74,12 @@ public class RequestFactory extends TestBase {
    * @return Response of the request
    */
   public static Response deleteBoard(String boardId) {
-    return null;
+    logger.info(String.format("Delete the board by id %s", boardId));
+    HashMap<String, String> params = setCommonQueryParams();
+    String requestPath = String.format(prop.getProperty("deleteBoardPath"), version, boardId);
+    Response res = RestClient.doDeleteRequestWithParams(requestPath, params);
+    logger.info(String.format("Delete the board by id %s is successfully", boardId));
+    return res;
   }
 
   // -------------------List-------------------
@@ -80,7 +92,13 @@ public class RequestFactory extends TestBase {
    * @return Response of the request
    */
   public static Response createList(String boardId, String listName) {
-    return null;
+    logger.info(String.format("Create the new list: %s", listName));
+    HashMap<String, String> params = setCommonQueryParams();
+    params.putAll(addParams(Map.of("name", listName, "idBoard", boardId)));
+    String requestPath = String.format(prop.getProperty("createListPath"), version);
+    Response res = RestClient.doPostRequestWithParamsAndNoPayload(requestPath, params);
+    logger.info(String.format("Create the %s list is successfully", listName));
+    return res;
   }
 
   // -------------------Card-------------------
@@ -91,7 +109,13 @@ public class RequestFactory extends TestBase {
    * @return
    */
   public static Response createCard(String taskName, String listId) {
-    return null;
+    logger.info(String.format("Create %s on listId %s", taskName, listId));
+    HashMap<String, String> params = setCommonQueryParams();
+    params.putAll(addParams(Map.of("name", taskName, "idList", listId)));
+    String requestPath = String.format(prop.getProperty("createCardPath"), version);
+    Response res = RestClient.doPostRequestWithParamsAndNoPayload(requestPath, params);
+    logger.info(String.format("Create %s on listId %s is successfully", taskName, listId));
+    return res;
   }
 
   /**
@@ -100,6 +124,20 @@ public class RequestFactory extends TestBase {
    * @return
    */
   public static Response updateCard(String cardId, String listId) {
-    return null;
+    logger.info(String.format("Move %s to listId %s", cardId, listId));
+    HashMap<String, String> params = setCommonQueryParams();
+    params.putAll(addParams(Map.of("idList", listId)));
+    String requestPath = String.format(prop.getProperty("updateCardPath"), version, cardId);
+    Response res = RestClient.doPutRequestWithParamsAndNoPayload(requestPath, params);
+    logger.info(String.format("Move %s to listId %s is successfully", cardId, listId));
+    return res;
+  }
+  
+    /**
+   * Commom method to set key and token
+   */
+    private static HashMap setCommonQueryParams() {
+    HashMap<String, String> params = addParams(Map.of("key", key,"token", token));
+    return params;
   }
 }
